@@ -11,7 +11,9 @@ class Calculator {
         this.pastOperand = '';
         this.operator = undefined;
         this.clearInputAfterEqualsFlag = 0;
+        this.result = 0;
         this.updateDisp();
+        
     }
 
     delete() {
@@ -63,8 +65,14 @@ class Calculator {
         this.updateDisp();
     }
 
-    updateDisp() {;
-        this.currentInputText.innerText = this.formatNumber(this.currentOperand);
+    updateDisp() {
+        if(Number.isFinite(this.result)) {
+            this.currentInputText.innerText = this.formatNumber(this.currentOperand);
+        }
+        else {
+            this.currentInputText.innerText = 'To infinity and beyond';
+            this.result = 0;
+        }
         if(this.operator != null) {
             this.pastInputText.innerText = `${this.formatNumber(this.pastOperand)} ${this.operator}`;
         }
