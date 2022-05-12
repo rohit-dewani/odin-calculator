@@ -10,6 +10,7 @@ class Calculator {
         this.currentOperand = '';
         this.pastOperand = '';
         this.operator = undefined;
+        this.clearInputAfterEqualsFlag = 0;
     }
 
     delete() {
@@ -18,46 +19,46 @@ class Calculator {
 
     appendInput(number) {
         if(number === '.' && this.currentOperand.includes('.')) return;
+        if(this.clearInputAfterEqualsFlag === 1) this.currentOperand = '';
         this.currentOperand = this.currentOperand.toString() + number.toString();
+        this.clearInputAfterEqualsFlag = 0;
     }
 
     chooseOperator(operation) {
         if(this.currentOperand === '') return;
-        if(this.pastOperand !== '') {
-            this.compute();
-        }
+        if(this.pastOperand !== '') this.compute();
         this.operator = operation;
         this.pastOperand = this.currentOperand;
         this.currentOperand = '';
     }
 
     compute() {
-        let result;
         const past = parseFloat(this.pastOperand);
         const current = parseFloat(this.currentOperand);
         if(isNaN(past) || isNaN(current)) return;
         switch (this.operator){
             case '+':
-                result = past + current;
+                this.result = past + current;
                 break;
             case '-':
-                result = past - current;
+                this.result = past - current;
                 break;
             case '×':
-                result = past * current;
+                this.result = past * current;
                 break;
             case '÷':
-                result = past / current;
+                this.result = past / current;
                 break;
             default:
                 return;
         }
-        this.currentOperand = result;
+        this.currentOperand = this.result;
         this.operator = undefined;
         this.pastOperand = '';
+        this.clearInputAfterEqualsFlag = 1;
     }
 
-    updateDisp() {
+    updateDisp() {;
         this.currentInputText.innerText = this.formatNumber(this.currentOperand);
         if(this.operator != null) {
             this.pastInputText.innerText = `${this.formatNumber(this.pastOperand)} ${this.operator}`;
@@ -113,6 +114,7 @@ operationButtons.forEach(button => {
 });
 
 equalsButton.addEventListener('click', button => {
+    calculator.clearInputAfterEqualsFlag = 0;
     calculator.compute();
     calculator.updateDisp();
 });
