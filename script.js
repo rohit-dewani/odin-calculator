@@ -11,10 +11,12 @@ class Calculator {
         this.pastOperand = '';
         this.operator = undefined;
         this.clearInputAfterEqualsFlag = 0;
+        this.updateDisp();
     }
 
     delete() {
         this.currentOperand = this.currentOperand.toString().slice(0, -1);
+        this.updateDisp();
     }
 
     appendInput(number) {
@@ -22,6 +24,7 @@ class Calculator {
         if(this.clearInputAfterEqualsFlag === 1) this.currentOperand = '';
         this.currentOperand = this.currentOperand.toString() + number.toString();
         this.clearInputAfterEqualsFlag = 0;
+        this.updateDisp();
     }
 
     chooseOperator(operation) {
@@ -30,6 +33,7 @@ class Calculator {
         this.operator = operation;
         this.pastOperand = this.currentOperand;
         this.currentOperand = '';
+        this.updateDisp();
     }
 
     compute() {
@@ -56,6 +60,7 @@ class Calculator {
         this.operator = undefined;
         this.pastOperand = '';
         this.clearInputAfterEqualsFlag = 1;
+        this.updateDisp();
     }
 
     updateDisp() {;
@@ -102,29 +107,61 @@ const calculator = new Calculator(pastInputText, currentInputText);
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.appendInput(button.innerText);
-        calculator.updateDisp();
     });
 });
 
 operationButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.chooseOperator(button.innerText);
-        calculator.updateDisp();
     });
 });
 
-equalsButton.addEventListener('click', button => {
-    calculator.clearInputAfterEqualsFlag = 0;
+equalsButton.addEventListener('click', () => {
     calculator.compute();
-    calculator.updateDisp();
 });
 
-clrButton.addEventListener('click', button => {
+clrButton.addEventListener('click', () => {
     calculator.clear();
-    calculator.updateDisp();
 });
 
-delButton.addEventListener('click', button => {
+delButton.addEventListener('click', () => {
     calculator.delete();
-    calculator.updateDisp();
+});
+
+window.addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            calculator.appendInput(e.key);
+            break;
+        case '+':
+        case '-':
+            calculator.chooseOperator(e.key);
+            break;
+        case '*':
+            calculator.chooseOperator('×');
+            break;
+        case '/':
+            calculator.chooseOperator('÷');
+            break;
+        case 'Enter':
+        case '=':
+            calculator.compute();
+            break;
+        case 'Backspace':
+            calculator.delete();
+            break;
+        case 'Escape':
+            calculator.clear();
+            break;
+        default: break;
+    }
 });
